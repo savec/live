@@ -1,6 +1,6 @@
 use rand::Rng;
 use std::{thread, time};
-use termion::{color, style};
+use termion::{color, style, cursor};
 
 #[derive(Debug)]
 struct Live {
@@ -10,16 +10,17 @@ struct Live {
 }
 
 impl Live {
-    fn new(x: usize, y: usize) -> Live {
+    fn new(x: usize, y: usize, p: usize) -> Live {
+        Live::fill_rnd(
         Live {
             cells: vec![vec![false; y]; x],
             xlen: x,
-            ylen: y
-        }
+            ylen: y,
+        }, p)
     }
 
     fn draw(&self) {
-        print!("{}", termion::cursor::Goto(1, 1));
+        print!("{}", cursor::Goto(1, 1));
         for y in &self.cells {
             for x in y {
                 print!("{}", if *x
@@ -31,8 +32,8 @@ impl Live {
         }
     }
 
-    fn fill_rnd(&mut self, p: usize) {
-        for y in self.cells.iter_mut() {
+    fn fill_rnd(mut live: Live, p: usize) -> Live {
+        for y in live.cells.iter_mut() {
             for x in y {
                 *x = if p < rand::thread_rng().gen_range(1, 100) {
                     false
@@ -41,6 +42,7 @@ impl Live {
                 }
             }
         }
+        live
     }
 
     fn check(&self, x: usize, y: usize) -> usize {
@@ -90,7 +92,6 @@ impl Live {
 }
 
 fn main() {
-    let mut live = Live::new(50, 100);
-    live.fill_rnd(10);
+    let mut live = Live::new(50, 100, 10);
     live.run();
 }
