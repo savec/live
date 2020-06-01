@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::{thread, time};
+use std::{thread, time, fmt};
 use termion::{color, style, cursor};
 
 #[derive(Debug)]
@@ -7,6 +7,23 @@ struct Live {
     cells: Vec<Vec<bool>>,
     xlen: usize,
     ylen: usize
+}
+
+impl fmt::Display for Live {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut out = String::from(cursor::Goto(1, 1));
+        for y in &self.cells {
+            for x in y {
+                if *x {
+                    out.push_str(&format!("{}*{}", color::Fg(color::Green), style::Reset));
+                } else {
+                    out.push_str(&format!("{}.{}", color::Fg(color::LightBlack), style::Reset));
+                }
+            }
+            out.push_str("\n");
+        }
+        write!(f, "{}", out)
+    }
 }
 
 impl Live {
@@ -20,16 +37,7 @@ impl Live {
     }
 
     fn draw(&self) {
-        print!("{}", cursor::Goto(1, 1));
-        for y in &self.cells {
-            for x in y {
-                print!("{}", if *x
-                {format!("{}*{}", color::Fg(color::Green), style::Reset)}
-                else
-                {format!("{}.{}", color::Fg(color::LightBlack), style::Reset)});
-            }
-            println!();
-        }
+        println!("{}", self.to_string());
     }
 
     fn fill_rnd(mut live: Live, p: usize) -> Live {
@@ -72,9 +80,9 @@ impl Live {
             for y in 0..self.ylen {
                 let neighbours = self.neighbours_count(x, y);
                 match neighbours {
-                    3       => next_cells[x][y] = true,
-                    2       => continue,
-                    _       => next_cells[x][y] = false,
+                    3 => next_cells[x][y] = true,
+                    2 => continue,
+                    _ => next_cells[x][y] = false,
                 }
             }
         }
