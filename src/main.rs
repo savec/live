@@ -13,7 +13,7 @@ mod live {
     impl fmt::Display for LiveObject {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             let mut out = String::from(cursor::Goto(1, 1));
-            for y in &self.cells {
+            for y in self.cells.iter() {
                 for x in y {
                     if *x {
                         out.push_str(&format!("{}*{}", color::Fg(color::Green), style::Reset));
