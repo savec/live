@@ -44,11 +44,7 @@ mod live {
         fn fill_rnd(mut live: LiveObject, p: usize) -> LiveObject {
             for y in live.cells.iter_mut() {
                 for x in y {
-                    *x = if p < rand::thread_rng().gen_range(1, 100) {
-                        false
-                    } else {
-                        true
-                    }
+                    *x = p > rand::thread_rng().gen_range(1, 100);
                 }
             }
             live
