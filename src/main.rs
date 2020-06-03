@@ -54,19 +54,15 @@ mod live {
             let xlen = self.xlen;
             let ylen = self.ylen;
             let mut count = 0;
-            let check = |x: usize, y: usize| -> usize {
-                if self.cells[x%xlen][y%ylen] {1} else {0}
-            };
 
-            count += check(x+xlen-1, y+ylen-1);
-            count += check(x,        y+ylen-1);
-            count += check(x+1,      y+ylen-1);
-            count += check(x+xlen-1, y);
-            count += check(x+1,      y);
-            count += check(x+xlen-1, y+1);
-            count += check(x,        y+1);
-            count += check(x+1,      y+1);
-
+            for dy in ylen-1..=ylen+1 {
+                for dx in xlen-1..=xlen+1 {
+                    let check = |x: usize, y: usize| -> usize {
+                        if self.cells[x%xlen][y%ylen] {1} else {0}
+                    };
+                    count += if dx == xlen && dy == ylen {0} else {check(x+dx, y+dy)}
+                }
+            }
             count
         }
 
