@@ -50,23 +50,22 @@ mod live {
             live
         }
 
-        fn check(&self, x: usize, y: usize) -> usize {
-            if self.cells[x][y] {1} else {0}
-        }
-
         fn neighbours_count(&self, x: usize, y: usize) -> usize {
             let xlen = self.xlen;
             let ylen = self.ylen;
             let mut count = 0;
+            let check = |x: usize, y: usize| -> usize {
+                if self.cells[x%xlen][y%ylen] {1} else {0}
+            };
 
-            count += self.check((x+xlen-1) % xlen, (y+ylen-1) % ylen);
-            count += self.check((x+xlen) % xlen, (y+ylen-1) % ylen);
-            count += self.check((x+xlen+1) % xlen, (y+ylen-1) % ylen);
-            count += self.check((x+xlen-1) % xlen, (y+ylen) % ylen);
-            count += self.check((x+xlen+1) % xlen, (y+ylen) % ylen);
-            count += self.check((x+xlen-1) % xlen, (y+ylen+1) % ylen);
-            count += self.check((x+xlen) % xlen, (y+ylen+1) % ylen);
-            count += self.check((x+xlen+1) % xlen, (y+ylen+1) % ylen);
+            count += check(x+xlen-1, y+ylen-1);
+            count += check(x,        y+ylen-1);
+            count += check(x+1,      y+ylen-1);
+            count += check(x+xlen-1, y);
+            count += check(x+1,      y);
+            count += check(x+xlen-1, y+1);
+            count += check(x,        y+1);
+            count += check(x+1,      y+1);
 
             count
         }
